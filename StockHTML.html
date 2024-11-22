@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock LookUp</title>
+</head>
+<body>
+    <h1>Stock LookUp</h1>
+    <p>Welcome! Just type in a valid U.S. Stock Ticker and click the button!</p>
+    <input type="text" id="stock_ticker_input">
+    <button id="stock_ticker_button">Click Me</button>
+
+    <div id="info" style="display: none;"></div>
+
+  <script>
+    // Front-end JavaScript
+    document.getElementById("stock_ticker_button").addEventListener("click", function() {
+        const stockTicker = document.getElementById("stock_ticker_input").value;
+      
+      
+      // Making a call to the backend
+      fetch('http://127.0.0.1/button-clicked', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symbol: stockTicker }),
+    
+        })
+        
+        .then(response =>  {
+            if (!response.ok)  {
+                return response.json().then(err => {
+                    throw new Error(err.error || "An unknown error occurred." );
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('info').innerHTML = `<p>Symbol: ${data.symbol}</p><p>Current Price: $${data.currentPrice}</p>`;
+        })
+        .catch(error => {document.getElementById('info').innerHTML = `<p>Error: ${error.message}</p>`
+    });
+
+        document.getElementById("info").style.display = "block"
+        
+
+    });
+  </script>
+</body>
+</html>
